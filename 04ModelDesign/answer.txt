@@ -1,0 +1,28 @@
+1. When would you use a weak entity?
+	We would use a weak entity when they can't exist in the database independently of their owning entity.
+
+2. Is it better to use entities instead of attributes?
+	No,it is not better.
+
+3. (1)One album can obtain two or more different artists. So, artist and album relationship change many to many.
+    (2)One track can sing two or more different artists.So,track and artist add to many-to-many relationship.
+	for this exercise,my ER diagram is no3.jpg.
+
+4. (1) Media_store is a strong entity, product_id is the primary key to distinguish between products.This entity contains product_name attribute.
+
+    (2) Video_DVD is a weak entity with video_dvd_id as a weak key.The media store must have many video DVDs.
+	So,media_store entity participate in the one-to-many relationship with video_DVD.
+	This entity contains video_title, video_price and studio_name attributes.
+
+    (3) Music_CD is a weak entity with CD_id as a weak key.The media store must have many music cds.
+	So,media_store entity participate in the one-to-many relationship with music_CD.
+  	This entity contains CD_label, CD_title, CD_price and artist_name attributes.
+
+    (4) As a weak entity,track participate in the many-to-one relationship with music_CD.
+	Track entity contains track_name,track_title,and track_length attributes.
+    
+    (5) Customer is a strong entity with customer_id as the primary key.Many customers can buy many videos and music CD.
+              So,their relationship is many-to-many.This entity contains customer_email attribute.
+
+I don't add payment type and system for customer entity.You would like to answer if I should add.
+
