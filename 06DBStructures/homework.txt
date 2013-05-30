@@ -1,4 +1,4 @@
-Chapter 6 Homework
+﻿Chapter 6 Homework
 
 All exercises here concern the music database. 
 
@@ -14,15 +14,87 @@ can store this information, and explain the advantages and disadvantages of your
 design. Choose the column types you need, explaining the advantages and disad-
 vantages of your choices.
 
+	mysql>CREATE TABLE artist (
+		artist_id SMALLINT(5) AUTO_INCREMENT ,
+		artist_name CHAR(128) NOT NULL,
+		artist_partners CHAR(128) DEFAULT NULL,
+		start_workdate DATE,
+		end_workdate DATE,
+		PRIMARY KEY (artist_id)
+		);
+     	mysql>CREATE TABLE album(
+		album_id SMALLINT(5) AUTO_INCREMENT,
+		album_name CHAR(128) NOT NULL,
+		albumProducer_name CHAR(128),
+		albumRelease_date DATE,
+		albumRecord_date DATE
+		PRIMARY KEY(album_id)
+		);
+	I can't explain the advantages and disadvantages of my column type choices.
+
 2. There are five types for storing temporal data: DATETIME, DATE, TIME, YEAR, and
 TIMESTAMP. Explain what each is used for, and give an example of a situation in
 which you would choose to use it. Note that http://palominodb.com/blog/2011/05/23/datetime-vs-timestamp
 has some useful information too.
 
+(1) DATE
+DATE must always be input as year,month and day triples.The input format can vary as shown in the following:
+	1.yyy-mm-dd or yy-mm-dd
+		we can use two-digit or four-digit years but we should use the four-digit version to avoid confusion about the century.
+	2.yyyy/mmm/dd, yyy:mm:dd, yy/mm/dd
+	3.yyyy/mm/dd, yyyy-mm-d, or yyyy-m-dd
+	4.yyyymmdd or yymmdd
+mysql> CREATE TABLE testdate (mydate DATE);
+mysql> INSERT INTO testdate VALUES ('2007/02/0');
+
+(2)TIME
+TIME must always be input in the order days,hours, minutes, and seconds, using the following formats:
+DD HH:MM:SS, HH:MM:SS, DD HH:MM, HH:MM, DD HH, or SS
+MySQL converts them into the internal time format and displays them consistently.
+For example, 1:1:3 is equivalent to 01:01:03.
+ Different numbers of digits can be mixed; for example, 1:12:3 is equivalent to 01:12:03.
+
+(3)DATETIME and TIMESTAMP
+We can also input a time by providing both a date and time in the formats described for DATETIME and TIMESTAMP.
+TIMESTAMP stores and displays a date and time pair in the format YYYY-MM-DD HH:MM:SS.
+The DATETIME value can be input in the same formats listed for the TIMESTAMP description.
+If we assign only a date to a DATETIME column, the zero time 00:00:00 is assumed. If we assign only a
+time to a DATETIME column, the zero date 0000-00-00 is assumed
+This type does not have the automatic update features of TIMESTAMP.
+mysql> CREATE TABLE mytime(id INT NOT NULL,
+	-> changetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+mysql> INSERT INTO mytime VALUES(1,''),(2,'2006-07-16 1:2:3'),(3,NULL);
+mysql> SELECT * FROM mytime;
++----+---------------------+
+| id | changetime |
++----+---------------------+
+| 1 | 0000-00-00 00:00:00 |
+| 2 | 2006-07-16 01:02:03 |
+| 3 | 2006-07-16 01:05:24 |
++----+---------------------+
+mysql> UPDATE mytime SET id=4 WHERE id=1;
+mysql> SELECT * FROM mytime;
++----+---------------------+
+| id | changetime |
++----+---------------------+
+| 4 | 2006-07-16 01:05:42 |
+| 2 | 2006-07-16 01:02:03 |
+| 3 | 2006-07-16 01:05:24 |
++----+---------------------+
+(4)YEAR
+YEAR stores only year values and can store two-digit or four-digit year.Without parameter,four digits is the default.
+We can input year values as either strings (such as '2005') or integers (such as 2005). The YEAR type requires one byte of storage space.
+
+
 3. You’ve decided to use the AUTO_INCREMENT feature. List the three requirements that
 must be met by the column you’re applying it to.
+        1.The column it is used on must be indexed.
+        2.The column that is it used on cannot have a DEFAULT value.
+        3.There can be only one AUTO_INCREMENT column per table.
 
 4. Why can only one column in a table have the AUTO_INCREMENT feature?
+	Only one column in a table can have the AUTO_INCREMENT feature 
+	because MySQL's propriety AUTO_INCREMENT feature allows to create a unique indentifier for a row without running a SELECT query.
 
 5. Using the monitor, create a table with the following statement:
 mysql> CREATE TABLE exercise (field1 INT(3));
@@ -30,3 +102,7 @@ Using the ALTER TABLE statement, make field1 the primary key, carrying out any
 additional steps you need to make this possible. Add a second column, field2, of
 type CHAR(64) with a DEFAULT 5 clause. Create an index on a prefix of 10 characters
 from field2.
+
+        mysql>ALTER TABLE exercise ADD PRIMARY KEY (field1);
+        mysql>ALTER TABLE exercise ADD field2 CHAR(64) DEFAULT 5;
+        mysql>ALTER TABLE exercis ADD INDEX field1(field2(10));
