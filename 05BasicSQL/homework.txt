@@ -21,8 +21,10 @@ in the WHERE clause, it's possible to forget some of the join clauses
 in the WHERE. If you put the join clauses in the JOIN part, it's way more readable.
 
 1) Use one or more SELECT statements to find out how many tracks are on New Order's Brotherhood album.
+mysql>SELECT COUNT( track_name ) FROM track INNER JOIN album USING ( album_id ) WHERE album_name =  'Brotherhood';
 
 2) Using a join, list the albums that we own by the band New Order
+mysql>SELECT album_name FROM album INNER JOIN artist USING ( artist_id ) WHERE artist_name =  'New Order';
 
 3) With INSERT statements, add the artist Leftfield to the database. 
 For this new artist, add the album "Leftism" that has the following tracks:
@@ -41,9 +43,20 @@ l. Bonus Track (Time: 1.22)
 
 The answer to this question should be the INSERT statement(s).
 
+mysql>INSERT INTO artist VALUES ( 7,  "Leftfield" );
+mysql>INSERT INTO album VALUES ( 7, 8,  "Leftism" );
+mysql>INSERT INTO track VALUES ( 0,  "Release the Pressure", 7, 8, 7.39 ) , ( 1,  "Afro-Melt", 7, 8, 7.33 ) ,
+ ( 2,  "Melt", 7, 8, 5.21 ) , ( 3,  "Song of Life", 7, 8, 6.55 ) , ( 4,  "Original", 7, 8, 6.00 ) , ( 5, "Black Flute", 7, 8, 3.46 ) ,
+ ( 6,  "Space Shanty", 7, 8, 7.15 ) , ( 7,  "Inspection Check One", 7, 8, 6.30 ) , ( 8,  "Storm 3000", 7, 8, 5.44 ) ,
+ ( 9,  "Open Up", 7, 8, 6.52 ) , ( 10, "21st Century Poem", 7, 8, 5.42 ) , ( 11,  "Bonus Track", 7, 8, 1.22 );
+
+
 4) How long in minutes is the Leftism album you added in Question 3? Hint: use the
 SUM() aggregate function.
+mysql>SELECT SUM( TIME ) FROM track INNER JOIN album USING ( album_id ) WHERE album_name =  "Leftism";
 
 5) Change the time for the Original track on the Leftism album to 6.22.
+mysql>UPDATE track SET TIME = 6.22 WHERE track_name =  "Original";
 
 6) Remove the 'Bonus Track' from the Leftism album,
+mysql>DELETE FROM track WHERE track_name =  "Bonus Track";
