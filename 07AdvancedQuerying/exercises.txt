@@ -1,4 +1,4 @@
-Even though on page 238 the book says it does not matter if you put 
+Even though on page 238 the book says it does not matter if you put 254
 JOIN conditions in ON or WHERE clauses, the advantage to putting them 
 in the ON clause is that it is easy to see if you missed a JOIN clause. 
 It is also required in some outer join situations (LEFT or RIGHT joins).
@@ -7,20 +7,45 @@ For these exercises, use the "music" database.
 
 1) Write a JOIN query that displays the name of each artist and the albums
 they've made. Alongside the album, display the number of tracks on the album.
-
+mysql> 	SELECT artist_name, album_name, COUNT( * ) 
+	FROM artist
+	INNER JOIN album	USING ( artist_id ) 
+	INNER JOIN track USING ( artist_id, album_id ) 
+	GROUP BY artist.artist_id, album.album_id;
+	
 2) Repeat Question 1, but now display only those albums that have more
 than 10 tracks
+mysql> 	SELECT artist_name, album_name, COUNT( * ) 
+	FROM artist
+	INNER JOIN album	USING ( artist_id ) 
+	INNER JOIN track USING ( artist_id, album_id ) 
+	GROUP BY artist.artist_id, album.album_id having count(*)>10;
 
 3) Repeat Question 1, but write it as a nested query.
+mysql> select artist_name, album_name, count(*) from artist,album,track where artist.artist_id IN (select artist_id from album) and (artist.artist_id,album.album_id) IN (select album_id,artist_id from track) GROUP BY artist.artist_id, album.album_id 
+
+ I can't answer this question.Please learn me.
+
 
 4) What are the four types of nested queries? For each type, write a sample
 query on the music database. Try to use different keywords in each query,
 selecting from ANY, ALL, EXISTS (or NOT EXISTS) and IN (or NOT IN).
+ The four types of nested queries are ANY, ALL, EXITS and In.
+mysql> SELECT album_name from album where album_id > any (select album_id from album);
+mysql> SELECT album_name from album where album_id  IN (select album_id from album);
+mysql> SELECT album_name from album where album_id  > all (select album_id from album);
+mysql> SELECT album_name from album where album_id  NOT IN (select album_id from album);
+mysql> SELECT album_name FROM album WHERE EXISTS  (SELECT * FROM artist WHERE artist_name = "New Order");
+mysql> SELECT album_name FROM album WHERE NOT EXISTS  (SELECT * FROM artist WHERE artist_name = "New Order");
 
 5) What is the difference between an INNER JOIN, a LEFT JOIN, and a RIGHT
 JOIN? Does the the order of tables matter in an INNER JOIN? Why or why not?
+1. The INNER JOIN returns all rows from both tables as long as there is a match between the columns in both tables.
+	The order of tables does not matter in an INNER JOIN.
+2. The LEFT JOIN  returns all rows from the left table (table1), with the matching rows in the right table (table2). 
+3. The RIGHT JOIN  returns all rows from the right table (table2), with the matching rows in the left table (table1). 
 
-6) Why do these queries give different results? What does this tell you
+6) Why do these queries give different results? What does this tell you 
 about using join conditions in the ON clause versus in the WHERE clause
 for LEFT (and RIGHT) JOINs?
 
@@ -37,3 +62,6 @@ LEFT JOIN played ON (track.album_id=played.album_id)
 WHERE track.track_id=played.track_id
 AND track.artist_id=3
 GROUP BY track_name, track.album_id;
+
+Ans:	These queries give different results. ON clause is same with USING in LEFT JOIN statement.That points to use which keywords to select data in table.
+  WHERE clause is directing exactly the place where select in tables.
